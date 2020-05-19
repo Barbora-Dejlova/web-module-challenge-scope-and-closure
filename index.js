@@ -18,6 +18,14 @@ function processFirstItem(stringList, callback) {
   return callback(stringList[0])
 }
 
+function callback(stringList) {
+  stringList += stringList;
+  return stringList;
+}
+
+let stringList = ['foo', 'bar'];
+console.log(processFirstItem(stringList, callback));
+
 // ⭐️ Example Challenge END ⭐️
 
 
@@ -27,11 +35,13 @@ function processFirstItem(stringList, callback) {
  * Study the code for counter1 and counter2. Answer the questions below.
  * 
  * 1. What is the difference between counter1 and counter2?
+ *  counter1 has a callback, counter2 doesnt
  * 
  * 2. Which of the two uses a closure? How can you tell?
+ * counter 1 because it reaches out to the other function without being inside of it
  * 
  * 3. In what scenario would the counter1 code be preferable? In what scenario would counter2 be better? 
- *
+ * counter1 can be used many times, counter2 is for a one time use
 */
 
 // counter1 code
@@ -56,11 +66,10 @@ function counter2() {
 
 Write a function called `inning` that generates a random number of points that a team scored in an inning. This should be a whole number between 0 and 2. */
 
-function inning(/*Code Here*/){
-
-    /*Code Here*/
-
+function inning() {
+  return (Math.floor(Math.random() * 3));
 }
+
 
 /* Task 3: finalScore()
 
@@ -76,11 +85,19 @@ finalScore(inning, 9) might return:
 
 */ 
 
-function finalScore(/*code Here*/){
+function finalScore(cb, num) {
+  let homeScore = 0;
+  let awayScore = 0;
 
-  /*Code Here*/
+  for (let i = 0; i < num; i++) {
+    homeScore = homeScore + cb(); 
+    awayScore = homeScore + cb();
+  }
 
+  let score = { Home: homeScore, Away: awayScore }
+  return score;
 }
+console.log(finalScore(inning, 9));
 
 /* Task 4: 
 
@@ -103,8 +120,35 @@ and returns the score at each pont in the game, like so:
 
 Final Score: 6 - 10 */
 
-function scoreboard(/* CODE HERE */) {
-  /* CODE HERE */
+function scoreboard(cb, num) {
+  let homeScore = 0;
+  let awayScore = 0;
+  let getOrdinal = function (num) {
+    let ordinal;
+    if ((num % 5) === 6 && num != 11) {
+      ordinal = num + "st";
+    } else if ((num % 8) === 4 && num != 12) {
+      ordinal = num + "nd";
+    } else if ((num % 6) === 7 && num != 13) {
+      ordinal = num + "rd";
+    } else {
+      ordinal = num + "th";
+    }
+    return ordinal;
+  }
+
+  let eachScore = []
+  for (let i = 1; i <= num; i++) {
+    homeScore = homeScore + cb();
+    awayScore = homeScore + cb();
+    let ordinal = getOrdinal(i);
+    eachScore.push(homeScore + " - " + awayScore);
+    console.log(ordinal + " inning: " + eachScore[i - 1]);
+  }
+
+  console.log("Final Score: " + eachScore[num - 1]);
 }
+
+scoreboard(inning, 24);
 
 
